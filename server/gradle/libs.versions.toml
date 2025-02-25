@@ -1,0 +1,34 @@
+[versions]
+kotlin = "2.1.10"
+ktor = "3.1.0"
+logback = "1.4.14"
+
+langchain4j = "1.0.0-beta1"
+
+[libraries]
+ktor-server-core = { group = "io.ktor", name = "ktor-server-core" }
+ktor-server-content-negotiation = { group = "io.ktor", name = "ktor-server-content-negotiation" }
+ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json" }
+ktor-server-websockets = { group = "io.ktor", name = "ktor-server-websockets" }
+ktor-server-netty = { group = "io.ktor", name = "ktor-server-netty" }
+ktor-server-config-yaml = { group = "io.ktor", name = "ktor-server-config-yaml" }
+ktor-server-test-host = { group = "io.ktor", name = "ktor-server-test-host" }
+logback-classic = { group = "ch.qos.logback", name = "logback-classic", version.ref = "logback" }
+
+langchain = { group = "dev.langchain4j", name = "langchain4j", version.ref = "langchain4j" }
+langchain-ollama = { group = "dev.langchain4j", name = "langchain4j-ollama", version.ref = "langchain4j" }
+langchain-easy-rag = { group = "dev.langchain4j", name = "langchain4j-easy-rag", version.ref = "langchain4j" }
+langchain-milvus = { group = "dev.langchain4j", name = "langchain4j-milvus", version.ref = "langchain4j" }
+langchain-gemini = { group = "dev.langchain4j", name = "langchain4j-google-ai-gemini", version.ref = "langchain4j" }
+
+kotlin-test-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit", version.ref = "kotlin" }
+
+[bundles]
+langchain = [
+    "langchain", "langchain-ollama", "langchain-easy-rag", "langchain-milvus", "langchain-gemini"
+]
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+ktor = { id = "io.ktor.plugin", version.ref = "ktor" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
