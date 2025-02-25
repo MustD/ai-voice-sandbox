@@ -1,6 +1,6 @@
 'use client';
 
-import {Button} from "@mui/material";
+import {Box, Button} from "@mui/material";
 import {useEffect, useState} from "react";
 import {IMediaRecorder, MediaRecorder, register} from 'extendable-media-recorder';
 import {connect} from 'extendable-media-recorder-wav-encoder';
@@ -71,20 +71,20 @@ export default function Recorder() {
     }, [mediaRecorder, socket]
   )
 
-  const chunkSize = 3000
+  const chunkSize = 15000
   return (
-    <div>
+    <Box sx={{p: 1}}>
       {socket === null && <div>Loading...</div>}
       {mediaRecorder === null && <div>Loading...</div>}
 
-      {!recording && <Button onClick={() => {
+      {!recording && <Button variant={"outlined"} onClick={() => {
         mediaRecorder?.start(chunkSize)
         setRecording(true)
       }}>Start Recording</Button>}
-      {recording && <Button onClick={() => {
+      {recording && <Button variant={"outlined"} onClick={() => {
         mediaRecorder?.stop()
         setRecording(false)
       }}>Stop Recording</Button>}
-    </div>
+    </Box>
   );
 }
