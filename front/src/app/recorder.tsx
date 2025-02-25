@@ -36,8 +36,8 @@ export default function Recorder() {
   }
 
   useEffect(() => {
-      handleConnectWebSocket()
-      handleCreateMediaRecorder()
+    handleConnectWebSocket()
+    handleCreateMediaRecorder()
     return () => {
       socket?.close();
       mediaRecorder?.stop();
