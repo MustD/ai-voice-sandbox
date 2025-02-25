@@ -7,7 +7,8 @@ import {List} from "immutable";
 
 export default function Output() {
   const [socket, setSocket] = useState<WebSocket | null>(null);
-  const [messages, setMessages] = useState<List<string>>(List(["test message"]));
+  const [messages, setMessages] = useState<List<string>>(List());
+  const [online, setOnline] = useState(false);
 
   /* Connect Web Socket Fn */
   async function handleConnectWebSocket() {
@@ -15,12 +16,14 @@ export default function Output() {
     const newSocket = new WebSocket(serverUrl);
 
     newSocket.onopen = () => {
-      console.log("Connected to socket");
+      setOnline(true);
     };
     newSocket.onclose = () => {
-      console.log("Disconnected");
+      setOnline(false)
     };
-
+    newSocket.onerror = () => {
+      setOnline(false)
+    }
     setSocket(newSocket);
   }
 
@@ -45,6 +48,12 @@ export default function Output() {
       {messages.size > 0 && (
         <Box>
           <Typography variant={"h6"}>Transcription:</Typography>
+          <Box sx={{display: 'flex', alignItems: 'center', gap: 1, mb: 2,}}>
+            <Box sx={{width: 12, height: 12, borderRadius: '50%', backgroundColor: online ? 'green' : 'red',}}/>
+            <Typography variant="body2">
+              {online ? 'Online' : 'Offline'}
+            </Typography>
+          </Box>
           <Divider sx={{m: 1}}/>
         </Box>
       )}
