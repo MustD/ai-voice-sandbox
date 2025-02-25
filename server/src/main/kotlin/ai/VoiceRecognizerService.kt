@@ -16,7 +16,7 @@ object VoiceRecognizerService {
         )
         val userMessage = UserMessage.from(
             TextContent.from("Convert to text."),
-            AudioContent.from(audio.base64Data(), "audio/webm"),
+            AudioContent.from(audio.base64Data(), "audio/wav"),
         )
         val response = model.chat(systemMessage, userMessage)
         return response.aiMessage().text()

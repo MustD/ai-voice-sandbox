@@ -1,18 +1,17 @@
 package com.perfectart
 
-import addWavHeader
 import com.perfectart.ai.VoiceRecognizerService
 import dev.langchain4j.data.audio.Audio
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
-import isWavHeader
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.io.File
 import java.time.OffsetDateTime
@@ -36,15 +35,9 @@ fun Application.configureSockets() {
     )
 
     launch {
-        audio.consumeAsFlow().map {
-            val bytes = if (!isWavHeader(it)) {
-                addWavHeader(it)  // Add WAV header if it doesn't exist
-            } else {
-                it
-            }
-            val fileName = "audio-${OffsetDateTime.now()}.wav"  // Changed extension to .wav
-            File(fileName).writeBytes(bytes)
-            bytes
+        audio.consumeAsFlow().onEach {
+//            val fileName = "audio-${OffsetDateTime.now()}.wav"
+//            File(fileName).writeBytes(it)
         }.map {
             Audio.builder().base64Data(Base64.Default.encode(it)).build()
         }.map {

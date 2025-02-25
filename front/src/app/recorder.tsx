@@ -2,7 +2,9 @@
 
 import {Button} from "@mui/material";
 import {useEffect, useState} from "react";
-import {IMediaRecorder, MediaRecorder} from 'extendable-media-recorder';
+import {IMediaRecorder, MediaRecorder, register} from 'extendable-media-recorder';
+import {connect} from 'extendable-media-recorder-wav-encoder';
+
 
 export default function Recorder() {
   const [socket, setSocket] = useState<WebSocket | null>(null);
@@ -26,48 +28,50 @@ export default function Recorder() {
 
   /* Connect to microphone */
   async function handleCreateMediaRecorder() {
-    navigator.mediaDevices.getUserMedia({audio: true})
-      .then((stream) => {
-        const mediaRecorder = new MediaRecorder(stream, {
-          audioBitsPerSecond: 128000,
-          mimeType: "audio/wav"
-        });
-        setMediaRecorder(mediaRecorder);
+    await register(await connect());
+    const stream = await navigator.mediaDevices.getUserMedia({audio: true})
+    const mediaRecorder = new MediaRecorder(stream, {mimeType: "audio/wav"});
 
-      }).catch((error) => {
-      console.error("Error accessing media devices:", error);
-    });
+    setMediaRecorder(mediaRecorder);
   }
 
   useEffect(() => {
-    handleConnectWebSocket();
-    handleCreateMediaRecorder();
+      handleConnectWebSocket()
+      handleCreateMediaRecorder()
     return () => {
       socket?.close();
       mediaRecorder?.stop();
     }
-  }, []);
+  }, [])
 
+  let header: ArrayBuffer | undefined
   useEffect(() => {
-    if (mediaRecorder === null) return;
-    if (socket === null) return;
+      if (mediaRecorder === null) return;
+      if (socket === null) return;
 
-    mediaRecorder.ondataavailable = (event) => {
-      if (event.data.size > 0) {
-        event.data.arrayBuffer()
-          .then((buffer) => {
-            console.log(`Sending ${buffer.byteLength} bytes of data`);
-            socket.send(buffer);
-          })
-          .catch((error) => {
-            console.error("Error reading data as ArrayBuffer:", error);
-          });
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          event.data.arrayBuffer()
+            .then((buffer) => {
+              console.log(`Sending ${buffer.byteLength} bytes of data`);
+              if (header === undefined) {
+                header = buffer.slice(0, 44)
+                socket.send(buffer);
+              } else {
+                socket.send(new Blob([header, buffer], {type: event.data.type}));
+              }
+
+            })
+            .catch((error) => {
+              console.error("Error reading data as ArrayBuffer:", error);
+            })
+        }
       }
-    };
 
-  }, [mediaRecorder, socket]);
+    }, [mediaRecorder, socket]
+  )
 
-  const chunkSize = 6000
+  const chunkSize = 3000
   return (
     <div>
       {socket === null && <div>Loading...</div>}
