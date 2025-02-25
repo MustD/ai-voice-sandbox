@@ -1,5 +1,4 @@
 import type {Metadata} from "next";
-import "./globals.css";
 import {CssBaseline} from "@mui/material";
 import {AppRouterCacheProvider} from "@mui/material-nextjs/v13-appRouter";
 import {Roboto} from 'next/font/google';
@@ -17,7 +16,6 @@ export const metadata: Metadata = {
   title: "Voice playground",
   description: "Voice recognition playground",
 };
-
 
 export default function RootLayout({children,}: Readonly<{
   children: React.ReactNode;
