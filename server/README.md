@@ -1,43 +1,89 @@
-# servier
+# Voice Recognizer Sandbox
 
-This project was created using the [Ktor Project Generator](https://start.ktor.io).
-
-Here are some useful links to get you started:
-
-- [Ktor Documentation](https://ktor.io/docs/home.html)
-- [Ktor GitHub page](https://github.com/ktorio/ktor)
-- The [Ktor Slack chat](https://app.slack.com/client/T09229ZC6/C0A974TJ9). You'll need
-  to [request an invite](https://surveys.jetbrains.com/s3/kotlin-slack-sign-up) to join.
+A real-time voice recognition application that combines a React-based frontend with a Kotlin-powered backend, utilizing
+WebSocket connections for streaming audio data and AI-powered speech recognition.
 
 ## Features
 
-Here's a list of features included in this project:
+- Real-time voice recording and streaming
+- WebSocket-based communication
+- AI-powered speech recognition using Google Gemini AI
+- Live transcription display
+- Connection status indicators
 
-| Name                                                                   | Description                                                                        |
-|------------------------------------------------------------------------|------------------------------------------------------------------------------------|
-| [Routing](https://start.ktor.io/p/routing)                             | Provides a structured routing DSL                                                  |
-| [Content Negotiation](https://start.ktor.io/p/content-negotiation)     | Provides automatic content conversion according to Content-Type and Accept headers |
-| [kotlinx.serialization](https://start.ktor.io/p/kotlinx-serialization) | Handles JSON serialization using kotlinx.serialization library                     |
-| [WebSockets](https://start.ktor.io/p/ktor-websockets)                  | Adds WebSocket protocol support for bidirectional client connections               |
+## Tech Stack
 
-## Building & Running
+### Frontend
 
-To build or run the project, use one of the following tasks:
+- React 19.0.0
+- Next.js 15.1.7
+- Material-UI (MUI) 6.4.5
+- TypeScript
+- WebSocket API for real-time communication
+- Media Recorder API for audio capture
 
-| Task                          | Description                                                          |
-|-------------------------------|----------------------------------------------------------------------|
-| `./gradlew test`              | Run the tests                                                        |
-| `./gradlew build`             | Build everything                                                     |
-| `buildFatJar`                 | Build an executable JAR of the server with all dependencies included |
-| `buildImage`                  | Build the docker image to use with the fat JAR                       |
-| `publishImageToLocalRegistry` | Publish the docker image locally                                     |
-| `run`                         | Run the server                                                       |
-| `runDocker`                   | Run using the local docker image                                     |
+### Backend
 
-If the server starts successfully, you'll see the following output:
+- Kotlin
+- Ktor (Web framework)
+- LangChain4j for AI integration
+- Google Gemini AI for speech recognition
+- WebSocket for bi-directional communication
 
-```
-2024-12-04 14:32:45.584 [main] INFO  Application - Application started in 0.303 seconds.
-2024-12-04 14:32:45.682 [main] INFO  Application - Responding at http://0.0.0.0:8080
-```
+## Prerequisites
 
+- Node.js and yarn
+- JDK 21
+- Google Gemini API key
+
+## Setup
+
+1. Clone the repository
+
+2. Backend Setup
+   ```bash
+   # Configure your Gemini API key in the application configuration
+   geminiApiKey=your_api_key_here
+   ```
+
+3. Frontend Setup
+   ```bash
+   yarn install
+   ```
+
+## Running the Application
+
+1. Start the Backend Server
+
+- The server will run on `http://127.0.0.1:8080`
+
+2. Start the Frontend Development Server
+   ```bash
+   yarn run dev
+   ```
+
+- The frontend will be available at `http://localhost:3000`
+
+## How it Works
+
+1. **Audio Recording**: The application uses the browser's MediaRecorder API to capture audio input from the user's
+   microphone.
+
+2. **Real-time Streaming**: Audio data is streamed to the backend server in WAV format through WebSocket connections.
+
+3. **Speech Recognition**: The backend processes the audio using Google Gemini AI for speech recognition.
+
+4. **Live Updates**: Transcribed text is sent back to the frontend and displayed in real-time.
+
+## WebSocket Endpoints
+
+- `/input` - Receives audio data streams
+- `/messages` - Handles transcribed text communication
+
+## Features
+
+- Real-time audio streaming with minimal latency
+- Visual connection status indicators
+- WAV format audio processing
+- Robust error handling and connection management
+- Clean and intuitive user interface
