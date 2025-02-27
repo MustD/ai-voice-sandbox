@@ -4,6 +4,9 @@ import {ThemeOptions} from '@mui/material/styles';
 import {createTheme} from "@mui/material";
 
 const themeOptions: ThemeOptions = {
+  typography: {
+    fontFamily: 'var(--font-roboto)',
+  },
   palette: {
     mode: 'dark',
     primary: {
@@ -14,7 +17,7 @@ const themeOptions: ThemeOptions = {
     },
     background: {
       default: '#030516',
-      paper: '#010116',
+      paper: 'rgba(8,8,102,0.8)',
     },
   },
 };
