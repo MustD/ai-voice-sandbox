@@ -22,6 +22,7 @@ class Context {
     fun getText() = text.value
 
     suspend fun addFile(arr: ByteArray) = files.emit(files.value + (OffsetDateTime.now().toString() to arr))
+    fun getWholeFile() = files.value.values.reduce { acc, bytes -> acc + bytes }
     fun saveFiles() = files.value.onEach { (date, content) ->
         val fileName = "audio-${date}.wav"
         File(fileName).writeBytes(content)

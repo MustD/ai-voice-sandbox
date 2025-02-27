@@ -16,7 +16,12 @@ object VoiceRecognizerService {
     fun byte2audio(array: ByteArray): Audio = Audio.builder().base64Data(Base64.Default.encode(array)).build()
 
     fun summarizeText(text: String): String {
-        val systemMessage = SystemMessage.from("Please summarize the following text into one sentence.")
+        val systemMessage = SystemMessage.from(
+            """
+                |Please summarize the following text into one or two sentences. 
+                |Output should be in the same language as input.
+                |""".trimMargin()
+        )
         val messages = listOf(systemMessage, UserMessage.from(TextContent.from(text)))
         val response = model.chat(messages)
         return response.aiMessage().text()
@@ -24,7 +29,13 @@ object VoiceRecognizerService {
 
     fun clearText(text: String): String {
         val systemMessage =
-            SystemMessage.from("Given text from audio recognition result. Please merge it into one sentence.")
+            SystemMessage.from(
+                """
+                    |Given text from audio recognition result. 
+                    |Please merge it into one sentence and correct possible chunk glue issues. 
+                    |Output should be in the same language as input.
+                    |""".trimMargin()
+            )
         val messages = listOf(systemMessage, UserMessage.from(TextContent.from(text)))
         val response = model.chat(messages)
         return response.aiMessage().text()
@@ -33,7 +44,7 @@ object VoiceRecognizerService {
     fun recognize(audio: Audio, prev: Audio? = null): String {
         val systemMessage = SystemMessage.from(
             """
-                |You are voice recognizer service. 
+                |You are the voice recognizer service. 
                 |Given current wav file and previous, please return text only for current wav file.
                 |Previous file is just to avoid word splitting issue.
                 |""".trimMargin()
@@ -47,7 +58,7 @@ object VoiceRecognizerService {
                 )
             },
             UserMessage.from(
-                TextContent.from("Current wav file to convert."),
+                TextContent.from("This is current wav file and should be recognized."),
                 AudioContent.from(audio.base64Data(), "audio/wav"),
             ),
         )

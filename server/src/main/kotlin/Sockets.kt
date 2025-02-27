@@ -10,7 +10,6 @@ import io.ktor.websocket.*
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.flow.onEach
 import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.time.Duration.Companion.seconds
 
@@ -25,6 +24,7 @@ fun Application.configureSockets() {
 
     routing {
         webSocket("/text2speech") {
+            val toSaveFile = false
             println("WebSocket '/input' connection opened.")
             val context = Context()
 
@@ -37,7 +37,10 @@ fun Application.configureSockets() {
                             when (text) {
                                 "start" -> context.clear()
                                 "stop" -> {
-                                    context.getText().let {
+                                    if (toSaveFile) context.saveFiles()
+
+                                    val wholeAudio = VoiceRecognizerService.byte2audio(context.getWholeFile())
+                                    VoiceRecognizerService.recognize(wholeAudio).let {
                                         VoiceRecognizerService.clearText(context.getText())
                                     }.let { cleanResult ->
                                         send(Frame.Text("Result: $cleanResult"))
@@ -56,9 +59,11 @@ fun Application.configureSockets() {
                         else -> null
                     }
                 }.map {
-                    it.readBytes().ensureWavHeaders()
-                }.onEach {
-                    context.addFile(it)
+                    val bytes = it.readBytes()
+                    context.addFile(bytes)
+                    bytes
+                }.map {
+                    it.ensureWavHeaders()
                 }.map {
                     runCatching {
                         val audio = it.let { VoiceRecognizerService.byte2audio(it) }

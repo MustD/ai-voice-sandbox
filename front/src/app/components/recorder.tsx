@@ -24,7 +24,7 @@ export default function Recorder(props: RecorderProps) {
     } catch (e) {
       console.info("double register", e)
     }
-    const stream = await navigator.mediaDevices.getUserMedia({audio: true})
+    const stream = await navigator.mediaDevices.getUserMedia({audio: true, video: false})
     const mediaRecorder = new MediaRecorder(stream, {mimeType: "audio/wav"});
 
     mediaRecorder.ondataavailable = async (event) => {
