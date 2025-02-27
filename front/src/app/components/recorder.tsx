@@ -2,9 +2,9 @@
 
 import {Box, Button} from "@mui/material";
 import React, {useEffect, useState} from "react";
-import {IMediaRecorder, MediaRecorder, register} from 'extendable-media-recorder';
+import {IMediaRecorder, MediaRecorder} from 'extendable-media-recorder';
 import Grid from "@mui/material/Grid2";
-import {connect} from "extendable-media-recorder-wav-encoder";
+import {registerWav} from "@/app/Audio";
 
 type RecorderProps = {
   socket: WebSocket,
@@ -18,12 +18,7 @@ export default function Recorder(props: RecorderProps) {
 
   /* Connect to microphone */
   async function handleCreateMediaRecorder() {
-    try {
-      const port = await connect()
-      await register(port)
-    } catch (e) {
-      console.info("double register", e)
-    }
+    await registerWav()
     const stream = await navigator.mediaDevices.getUserMedia({audio: true, video: false})
     const mediaRecorder = new MediaRecorder(stream, {mimeType: "audio/wav"});
 
